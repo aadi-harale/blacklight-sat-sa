@@ -1,0 +1,2 @@
+alert_id,severity,asset_id,opened_at,closed_at,triaged_at,investigated_at,enriched_at,escalated_at,automation_run_id,closure_reason,action_signature,exception_code
+EXAMPLE-001,critical,ASSET-001,2026-07-31T10:00:00Z,2026-07-31T10:04:00Z,2026-07-31T10:00:20Z,2026-07-31T10:01:10Z,2026-07-31T10:00:45Z,2026-07-31T10:02:00Z,,resolved,query>enrich>decision,
