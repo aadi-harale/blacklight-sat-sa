@@ -4,8 +4,13 @@ import { Workbench } from '@/components/Workbench';
 export default function WorkbenchPage() {
   return (
     <>
-      <Workbench />
-      <ReviewOptimizer />
+      <a className="skip-link" href="#blacklight-workbench">Skip to assessment workspace</a>
+      <div id="blacklight-workbench" tabIndex={-1}>
+        <Workbench />
+      </div>
+      <section id="review-optimizer" aria-label="Targeted review optimization">
+        <ReviewOptimizer />
+      </section>
     </>
   );
 }

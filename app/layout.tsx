@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import './readability.css';
+import './accessibility.css';
 
 export const metadata: Metadata = {
   title: 'BLACKLIGHT — Proof Before Prediction',
