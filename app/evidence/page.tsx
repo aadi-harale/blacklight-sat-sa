@@ -41,21 +41,23 @@ export default async function EvidencePage({searchParams}:{searchParams:Params})
         </div>
       </section>
 
-      <section style={{border:'1px solid #203832',borderRadius:14,background:'#091518',overflow:'hidden',marginBottom:16}} aria-label="Proof ledger">
-        <div style={{padding:'14px 17px',borderBottom:'1px solid #203832'}}><span style={{fontSize:10,letterSpacing:'.09em',color:'#708984'}}>FULL PROOF LEDGER · COMPACT VIEW</span></div>
-        {assessment.findings.map(f=><div key={f.id} style={{display:'grid',gridTemplateColumns:'145px minmax(0,1fr) 115px 210px',gap:14,alignItems:'center',padding:'14px 17px',borderBottom:'1px solid #182c27'}}>
-          <div><span style={{fontSize:10,color:'#6f8882'}}>{f.id}</span><b style={{display:'block',fontSize:13,marginTop:3}}>{f.shortLabel}</b></div>
-          <div style={{display:'flex',gap:8,alignItems:'center'}}><VerdictIcon verdict={f.verdict}/><span style={{fontSize:13,color:verdictColor(f.verdict),fontWeight:800}}>{f.verdict.toUpperCase()}</span></div>
-          <div><b style={{fontSize:18}}>{pct(f.numerator,f.denominator)}</b><small style={{display:'block',color:'#748b85'}}>{f.missingCount} gaps</small></div>
-          <div style={{fontSize:12,color:'#a9bdb7'}}>Next: <b style={{color:'#d0dfdb'}}>{f.nextEvidence.title}</b></div>
-        </div>)}
-      </section>
-
-      <section style={{border:'1px solid #2b4a43',borderRadius:14,background:'#0b1b1f',padding:20}} aria-label="Supervisor close-out">
+      <section style={{border:'1px solid #2b4a43',borderRadius:14,background:'#0b1b1f',padding:20,marginBottom:16}} aria-label="Supervisor close-out">
         <span style={{fontSize:11,letterSpacing:'.08em',color:'#7ce0c6'}}>SUPERVISOR CLOSE-OUT</span>
         <div style={{display:'flex',gap:18,justifyContent:'space-between',flexWrap:'wrap',marginTop:7}}><div style={{maxWidth:710}}><h2 style={{fontSize:21,margin:'0 0 7px'}}>{soc==='north'?'Challenge the claim — not the people.':'Healthy control clears the same tests.'}</h2><p style={{margin:0,color:'#96aaa5',lineHeight:1.55}}>{soc==='north'?'North stays challenged because evidence gaps survive reconstruction. Legitimate automation remains a live competing explanation until its execution trail is produced.':'West keeps the claim because investigation, automation and coverage evidence stay coherent under the same rules.'}</p></div><div style={{minWidth:245,border:'1px solid #28433d',borderRadius:11,padding:14}}><span style={{fontSize:10,color:'#718984'}}>NEXT ACTION</span><strong style={{display:'block',marginTop:5,fontSize:17}}>{soc==='north'?'7 reviews + 1 evidence request':'Retain claim + control sample'}</strong><small style={{display:'block',marginTop:7,color:'#8fa39e'}}>Supervisor remains final.</small></div></div>
         <div style={{display:'flex',gap:10,flexWrap:'wrap',marginTop:16}}>{soc==='north'?<Link href="/evidence?soc=west" style={primaryLink}>Compare with SOC West →</Link>:<Link href="/evidence?soc=north" style={primaryLink}>Return to SOC North →</Link>}<Link href="/workbench#review-optimizer" style={secondaryLink}><Target size={14}/> Review Optimizer</Link></div>
       </section>
+
+      <details style={{border:'1px solid #203832',borderRadius:14,background:'#091518',overflow:'hidden',marginBottom:16}}>
+        <summary style={{padding:'15px 17px',cursor:'pointer',listStyle:'none',display:'flex',justifyContent:'space-between',gap:16,alignItems:'center',fontSize:13,fontWeight:800,color:'#c8d9d4'}}><span>Show complete proof ledger</span><small style={{color:'#708984',fontWeight:600}}>{assessment.findings.length} deterministic tests · examiner detail</small></summary>
+        <div style={{borderTop:'1px solid #203832'}}>
+          {assessment.findings.map(f=><div key={f.id} style={{display:'grid',gridTemplateColumns:'145px minmax(0,1fr) 115px 210px',gap:14,alignItems:'center',padding:'14px 17px',borderBottom:'1px solid #182c27'}}>
+            <div><span style={{fontSize:10,color:'#6f8882'}}>{f.id}</span><b style={{display:'block',fontSize:13,marginTop:3}}>{f.shortLabel}</b></div>
+            <div style={{display:'flex',gap:8,alignItems:'center'}}><VerdictIcon verdict={f.verdict}/><span style={{fontSize:13,color:verdictColor(f.verdict),fontWeight:800}}>{f.verdict.toUpperCase()}</span></div>
+            <div><b style={{fontSize:18}}>{pct(f.numerator,f.denominator)}</b><small style={{display:'block',color:'#748b85'}}>{f.missingCount} gaps</small></div>
+            <div style={{fontSize:12,color:'#a9bdb7'}}>Next: <b style={{color:'#d0dfdb'}}>{f.nextEvidence.title}</b></div>
+          </div>)}
+        </div>
+      </details>
 
       <footer style={{marginTop:16,display:'flex',gap:20,flexWrap:'wrap',color:'#809690',fontSize:12}}><span style={{display:'flex',gap:6,alignItems:'center'}}><Fingerprint size={14}/> deterministic</span><span style={{display:'flex',gap:6,alignItems:'center'}}><ShieldCheck size={14}/> no LLM verdict</span><span>Same evidence + same rules = same finding.</span></footer>
     </div>
