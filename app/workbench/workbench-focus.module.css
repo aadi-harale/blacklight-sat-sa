@@ -1,0 +1,25 @@
+.demoStrip{display:grid;grid-template-columns:minmax(230px,.9fr) minmax(420px,1.5fr) auto;align-items:center;gap:16px;padding:11px 16px;border-bottom:1px solid #20342f;background:linear-gradient(90deg,#09120f,#0a1513 55%,#09120f);color:#dce9e5}
+.demoClaim{display:flex;align-items:baseline;gap:9px;min-width:0}.demoClaim span{font-size:9px;font-weight:850;letter-spacing:.1em;color:#7f9690}.demoClaim strong{font-size:19px;color:#d7eb69}.demoClaim em{font-size:11px;font-style:normal;color:#a8bbb5;white-space:nowrap}
+.demoFlow{display:flex;align-items:center;justify-content:center;gap:9px;min-width:0}.demoFlow span{font-size:9px;font-weight:850;letter-spacing:.08em;color:#70877f}.demoFlow b{font-size:11px;color:#d9e5e1;white-space:nowrap}.demoFlow i{font-style:normal;color:#526b63}
+.demoLink{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 12px;border:1px solid #315148;border-radius:8px;color:#cce0da;text-decoration:none;font-size:11px;font-weight:800;white-space:nowrap;background:#0b1c17}.demoLink:hover,.demoLink:focus-visible{border-color:#76d9bb;color:#effff9;outline:none;box-shadow:0 0 0 2px rgba(118,217,187,.14)}
+
+/* Decision-first workbench. Detailed reconstruction stays available on /evidence. */
+.focused :global(.finding-hero__copy p){display:none}
+.focused :global(.finding-hero){padding-top:16px!important;padding-bottom:16px!important}
+.focused :global(.finding-hero__copy h2){margin-bottom:0!important}
+.focused :global(.matrix-card){margin-top:10px!important}
+.focused :global(.matrix-row p){font-size:12px!important;line-height:1.45!important}
+.focused :global(.right-panel .inspector-block:nth-of-type(n+3)){display:none!important}
+.focused :global(.right-panel__scroll){padding-bottom:18px!important}
+.focused :global(.inspector-copy){display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.focused :global(.trust-note){display:none!important}
+.focused :global(.claim-banner){padding-top:14px!important;padding-bottom:14px!important}
+.focused :global(.claim-banner blockquote){font-size:19px!important;line-height:1.32!important;margin-top:6px!important;margin-bottom:6px!important}
+.focused :global(.flow-stage){padding-top:14px!important;padding-bottom:14px!important}
+.focused :global(.flow-stage__header){margin-bottom:12px!important}
+.focused :global(.stage-scroll){padding-top:12px!important}
+.focused :global(.rail-note){display:none!important}
+.focused :global(.review-optimizer){max-height:52px}
+
+@media(max-width:1100px){.demoStrip{grid-template-columns:1fr auto}.demoFlow{display:none}}
+@media(max-width:720px){.demoStrip{grid-template-columns:1fr;padding:10px 12px}.demoClaim{flex-wrap:wrap}.demoLink{width:100%}}
