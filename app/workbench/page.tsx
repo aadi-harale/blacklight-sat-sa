@@ -6,6 +6,16 @@ import './workbench.css';
 
 function pack(name:string,records:any[],profile:any){const a=assessDataset(records,{name,source:'demo',declaredCriticalAssets:profile.declaredCriticalAssets,claimedProtectedAssets:profile.claimedProtectedAssets,loadedAt:'2026-07-31T23:59:59.000Z'});return {a,unsupported:a.findings.filter(f=>f.verdict==='unsupported').length,review:a.findings.filter(f=>f.verdict==='review').length,supported:a.findings.filter(f=>f.verdict==='supported').length}}
 
+const reviewSet=[
+  ['CRIT-00001','Fast close · no investigation · no automation'],
+  ['CRIT-00023','Fast unexplained closure from a different asset stratum'],
+  ['CRIT-00042','Repeated template sequence · missing investigation'],
+  ['CRIT-00071','Exception-coded maintenance-window case'],
+  ['CRIT-00137','Fast closure with a traceable automation control'],
+  ['CRIT-00301','Escalation-policy edge case'],
+  ['ASSET-312','Negative-space coverage check: declared, never observed'],
+] as const;
+
 export default function WorkbenchPage(){
   const north=pack('SOC North — challenged KPI',makeDemoRecords(),DEMO_ASSET_PROFILE);const west=pack('SOC West — healthy control',makeWestDemoRecords(),WEST_ASSET_PROFILE);const actionableDebt=136+276+41;
   return <main className="blInstrument">
@@ -22,7 +32,7 @@ export default function WorkbenchPage(){
       <aside className="blPanel">
         <section className="blCard"><div className="blSearch"><FileSearch size={15}/><span>Select an evidence pack to examine...</span></div><div className="blPreset"><Link className="active" href="/evidence?soc=north">SOC North</Link><Link href="/evidence?soc=west">SOC West</Link></div><div className="blActionBox"><span>GUIDED REVIEW</span><h2>Start with the challenged claim.</h2><p>Open North, inspect the decisive contradiction, then flip to West and watch the same rules clear a documented control.</p><Link className="blRun" href="/evidence?soc=north">Run falsification walkthrough</Link></div></section>
 
-        <section className="blCard" id="review-optimizer"><div className="blCardHead"><span>EVIDENCE DEBT SNAPSHOT</span><span>counted · not scored</span></div><div className="blIndex"><strong>{actionableDebt}</strong><span> gaps</span></div><b className="blGrade">Actionable proof missing</b><div className="blTags"><span>{north.unsupported} UNSUPPORTED TESTS</span><span>{north.review} COMPARABILITY REVIEW</span><span>{north.a.dataset.recordCount.toLocaleString()} RECORDS</span></div><div className="blDrivers"><DebtRow label="Investigation transitions" value="136"/><DebtRow label="Protected-asset coverage" value="276"/><DebtRow label="Automation execution trails" value="41"/><DebtRow label="Escalation-policy state" value="review"/></div><div className="blTrust"><span>REVIEW OPTIMIZER</span><b>7 diverse reviews + 1 targeted evidence request</b></div></section>
+        <section className="blCard" id="review-optimizer"><div className="blCardHead"><span>EVIDENCE DEBT SNAPSHOT</span><span>counted · not scored</span></div><div className="blIndex"><strong>{actionableDebt}</strong><span> gaps</span></div><b className="blGrade">Actionable proof missing</b><div className="blTags"><span>{north.unsupported} UNSUPPORTED TESTS</span><span>{north.review} COMPARABILITY REVIEW</span><span>{north.a.dataset.recordCount.toLocaleString()} RECORDS</span></div><div className="blDrivers"><DebtRow label="Investigation transitions" value="136"/><DebtRow label="Protected-asset coverage" value="276"/><DebtRow label="Automation execution trails" value="41"/><DebtRow label="Escalation-policy state" value="review"/></div><div className="blTrust"><span>REVIEW OPTIMIZER</span><b>7 diverse reviews + 1 targeted evidence request</b></div><div className="blSocRows">{reviewSet.map(([id,why])=><div key={id}><span>{id}</span><b>{why}</b></div>)}</div><div className="blSocAction"><span>SMALLEST NEXT EVIDENCE</span><b>Request the SOAR execution history for the 41 fast unresolved closures. A coherent trail could clear the automation explanation without reviewing all 1,842 alerts.</b></div></section>
 
         <div className="blNote"><span>BOUNDARY CONDITION</span><b>BLACKLIGHT challenges claims, not people.</b><p>Fast closure alone is not misconduct. A legitimate automation explanation stays alive until the expected execution evidence is produced.</p></div>
       </aside>
