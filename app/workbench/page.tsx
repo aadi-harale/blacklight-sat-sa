@@ -2,6 +2,7 @@ import Link from 'next/link';
 import {FileSearch,Layers,Link2} from 'lucide-react';
 import {assessDataset} from '@/lib/engine';
 import {DEMO_ASSET_PROFILE,makeDemoRecords,makeWestDemoRecords,WEST_ASSET_PROFILE} from '@/lib/demo';
+import {SocChallengeBar} from '@/components/SocChallengeBar';
 import './workbench.css';
 
 function pack(name:string,records:any[],profile:any){const a=assessDataset(records,{name,source:'demo',declaredCriticalAssets:profile.declaredCriticalAssets,claimedProtectedAssets:profile.claimedProtectedAssets,loadedAt:'2026-07-31T23:59:59.000Z'});return {a,unsupported:a.findings.filter(f=>f.verdict==='unsupported').length,review:a.findings.filter(f=>f.verdict==='review').length,supported:a.findings.filter(f=>f.verdict==='supported').length}}
@@ -26,7 +27,7 @@ export default function WorkbenchPage(){
         <div className="blCanvasTitle"><div><span>SUPERVISORY EVIDENCE CANVAS</span><h1>Can the SOC prove the story behind 99.8%?</h1></div><small>Same engine · two evidence packs · no misconduct inference</small></div>
         <div className="blClaim"><span>REPORTED KPI</span><div className="blClaimLine"><strong>99.8% SLA compliance</strong><em>CHALLENGED · NOT CONDEMNED</em></div></div>
         <div className="blFlow"><article><span>01 · CLAIM</span><b>Define what must be true</b><p>A strong SLA should leave investigation, automation and coverage evidence.</p></article><article><span>02 · RECONSTRUCT</span><b>Replay operational evidence</b><p>Check event ordering and negative space instead of trusting the aggregate.</p></article><article><span>03 · FALSIFY</span><b>Keep competing explanations</b><p>Automation can still explain fast closure — if its execution trail exists.</p></article><article><span>04 · ACT</span><b>Ask for the smallest proof</b><p>Reduce a broad audit to seven diverse reviews and one targeted request.</p></article></div>
-        <div className="blSocCompare"><SocCard kind="north" title="SOC North" state="Claim challenged" p={north} observed="311 / 587 protected assets observed" automation="41 fast closures lack automation trail" href="/evidence?soc=north"/><SocCard kind="west" title="SOC West" state="Healthy control" p={west} observed="Coverage aligns with declared estate" automation="Automation trail remains coherent" href="/evidence?soc=west"/></div>
+        <SocChallengeBar/>
       </div></section>
 
       <aside className="blPanel">
@@ -40,5 +41,4 @@ export default function WorkbenchPage(){
   </main>
 }
 
-function SocCard({kind,title,state,p,observed,automation,href}:{kind:'north'|'west';title:string;state:string;p:any;observed:string;automation:string;href:string}){return <article className={`blSoc ${kind}`}><div className="blSocHead"><span>{title.toUpperCase()}</span><b>{state}</b></div><div className="blSocStats"><div><span>Unsupported</span><b>{p.unsupported}</b></div><div><span>Review</span><b>{p.review}</b></div><div><span>Supported</span><b>{p.supported}</b></div></div><div className="blSocRows"><div><span>Investigation evidence</span><b>{kind==='north'?'136 gaps':'complete'}</b></div><div><span>Protected assets</span><b>{observed}</b></div><div><span>Automation explanation</span><b>{automation}</b></div></div><div className="blSocAction"><span>Same rules · different evidence</span><Link href={href}>Inspect pack →</Link></div></article>}
 function DebtRow({label,value}:{label:string;value:string}){return <div><span>{label}<b>{value}</b></span><i><em style={{width:value==='review'?'64%':`${Math.min(100,Math.max(12,Number(value)/3))}%`}}/></i></div>}
