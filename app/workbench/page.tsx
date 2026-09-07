@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import {FileSearch,Layers,Link2,ShieldCheck} from 'lucide-react';
+import {FileSearch,Layers,Link2} from 'lucide-react';
 import {assessDataset} from '@/lib/engine';
 import {DEMO_ASSET_PROFILE,makeDemoRecords,makeWestDemoRecords,WEST_ASSET_PROFILE} from '@/lib/demo';
 import './workbench.css';
@@ -7,7 +7,7 @@ import './workbench.css';
 function pack(name:string,records:any[],profile:any){const a=assessDataset(records,{name,source:'demo',declaredCriticalAssets:profile.declaredCriticalAssets,claimedProtectedAssets:profile.claimedProtectedAssets,loadedAt:'2026-07-31T23:59:59.000Z'});return {a,unsupported:a.findings.filter(f=>f.verdict==='unsupported').length,review:a.findings.filter(f=>f.verdict==='review').length,supported:a.findings.filter(f=>f.verdict==='supported').length}}
 
 export default function WorkbenchPage(){
-  const north=pack('SOC North — challenged KPI',makeDemoRecords(),DEMO_ASSET_PROFILE);const west=pack('SOC West — healthy control',makeWestDemoRecords(),WEST_ASSET_PROFILE);const lead=north.a.findings.find(f=>f.verdict==='unsupported')??north.a.findings[0];const challenge=Math.round((north.unsupported*22+north.review*10)+Math.min(30,lead.missingCount/6));
+  const north=pack('SOC North — challenged KPI',makeDemoRecords(),DEMO_ASSET_PROFILE);const west=pack('SOC West — healthy control',makeWestDemoRecords(),WEST_ASSET_PROFILE);const actionableDebt=136+276+41;
   return <main className="blInstrument">
     <header className="blHeader"><div className="blBrand"><Link href="/" className="blLogo"><span className="blMark">◉</span><b>BLACKLIGHT</b></Link><span className="blDivider"/><div className="blHeaderMeta"><strong>SOC supervisory assessment</strong><small>Periodic evidence review · deterministic · offline-friendly</small></div></div><div className="blHeaderActions"><Link href="/advanced" className="blGhost"><Layers size={15}/> Advanced</Link><Link href="/evidence?soc=north" className="blGhost"><Link2 size={15}/> Open evidence</Link><Link href="/evidence?soc=north" className="blPrimary"><FileSearch size={15}/> Start review</Link></div></header>
 
@@ -22,7 +22,7 @@ export default function WorkbenchPage(){
       <aside className="blPanel">
         <section className="blCard"><div className="blSearch"><FileSearch size={15}/><span>Select an evidence pack to examine...</span></div><div className="blPreset"><Link className="active" href="/evidence?soc=north">SOC North</Link><Link href="/evidence?soc=west">SOC West</Link></div><div className="blActionBox"><span>GUIDED REVIEW</span><h2>Start with the challenged claim.</h2><p>Open North, inspect the decisive contradiction, then flip to West and watch the same rules clear a documented control.</p><Link className="blRun" href="/evidence?soc=north">Run falsification walkthrough</Link></div></section>
 
-        <section className="blCard"><div className="blCardHead"><span>CLAIM ROBUSTNESS INDEX</span><span>deterministic</span></div><div className="blIndex"><strong>{Math.min(99,challenge)}</strong><span>/ 100</span></div><b className="blGrade">High supervisory challenge</b><div className="blTags"><span>{north.unsupported} UNSUPPORTED</span><span>{north.review} REVIEW</span><span>{north.a.dataset.recordCount.toLocaleString()} RECORDS</span></div><div className="blDrivers"><Driver label="Missing investigation transitions" value={92}/><Driver label="Observed protected-asset evidence" value={53}/><Driver label="Automation-trail support" value={71}/><Driver label="Policy comparability" value={64}/></div><div className="blTrust"><span>NEXT ACTION</span><b>7 reviews + 1 evidence request</b></div></section>
+        <section className="blCard" id="review-optimizer"><div className="blCardHead"><span>EVIDENCE DEBT SNAPSHOT</span><span>counted · not scored</span></div><div className="blIndex"><strong>{actionableDebt}</strong><span> gaps</span></div><b className="blGrade">Actionable proof missing</b><div className="blTags"><span>{north.unsupported} UNSUPPORTED TESTS</span><span>{north.review} COMPARABILITY REVIEW</span><span>{north.a.dataset.recordCount.toLocaleString()} RECORDS</span></div><div className="blDrivers"><DebtRow label="Investigation transitions" value="136"/><DebtRow label="Protected-asset coverage" value="276"/><DebtRow label="Automation execution trails" value="41"/><DebtRow label="Escalation-policy state" value="review"/></div><div className="blTrust"><span>REVIEW OPTIMIZER</span><b>7 diverse reviews + 1 targeted evidence request</b></div></section>
 
         <div className="blNote"><span>BOUNDARY CONDITION</span><b>BLACKLIGHT challenges claims, not people.</b><p>Fast closure alone is not misconduct. A legitimate automation explanation stays alive until the expected execution evidence is produced.</p></div>
       </aside>
@@ -31,4 +31,4 @@ export default function WorkbenchPage(){
 }
 
 function SocCard({kind,title,state,p,observed,automation,href}:{kind:'north'|'west';title:string;state:string;p:any;observed:string;automation:string;href:string}){return <article className={`blSoc ${kind}`}><div className="blSocHead"><span>{title.toUpperCase()}</span><b>{state}</b></div><div className="blSocStats"><div><span>Unsupported</span><b>{p.unsupported}</b></div><div><span>Review</span><b>{p.review}</b></div><div><span>Supported</span><b>{p.supported}</b></div></div><div className="blSocRows"><div><span>Investigation evidence</span><b>{kind==='north'?'136 gaps':'complete'}</b></div><div><span>Protected assets</span><b>{observed}</b></div><div><span>Automation explanation</span><b>{automation}</b></div></div><div className="blSocAction"><span>Same rules · different evidence</span><Link href={href}>Inspect pack →</Link></div></article>}
-function Driver({label,value}:{label:string;value:number}){return <div><span>{label}<b>{value}%</b></span><i><em style={{width:`${value}%`}}/></i></div>}
+function DebtRow({label,value}:{label:string;value:string}){return <div><span>{label}<b>{value}</b></span><i><em style={{width:value==='review'?'64%':`${Math.min(100,Math.max(12,Number(value)/3))}%`}}/></i></div>}
