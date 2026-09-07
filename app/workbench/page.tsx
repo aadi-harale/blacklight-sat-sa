@@ -1,50 +1,34 @@
 import Link from 'next/link';
-import { ArrowRight, FileSearch, ShieldCheck, Target } from 'lucide-react';
+import {FileSearch,Layers,Link2,ShieldCheck} from 'lucide-react';
+import {assessDataset} from '@/lib/engine';
+import {DEMO_ASSET_PROFILE,makeDemoRecords,makeWestDemoRecords,WEST_ASSET_PROFILE} from '@/lib/demo';
+import './workbench.css';
+
+function pack(name:string,records:any[],profile:any){const a=assessDataset(records,{name,source:'demo',declaredCriticalAssets:profile.declaredCriticalAssets,claimedProtectedAssets:profile.claimedProtectedAssets,loadedAt:'2026-07-31T23:59:59.000Z'});return {a,unsupported:a.findings.filter(f=>f.verdict==='unsupported').length,review:a.findings.filter(f=>f.verdict==='review').length,supported:a.findings.filter(f=>f.verdict==='supported').length}}
 
 export default function WorkbenchPage(){
-  return <main style={{minHeight:'100vh',background:'#071014',color:'#e8f1ef',fontFamily:'system-ui,sans-serif'}}>
-    <div style={{maxWidth:1040,margin:'0 auto',padding:'34px 24px 52px'}}>
-      <header style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:18,marginBottom:28}}>
-        <div><span style={{fontSize:11,letterSpacing:'.12em',color:'#78dfc5',fontWeight:800}}>BLACKLIGHT · GUIDED DEMO</span><h1 style={{fontSize:38,lineHeight:1.08,margin:'8px 0 8px'}}>Can this SOC prove what it reports?</h1><p style={{margin:0,color:'#93a9a4',maxWidth:700,lineHeight:1.6}}>One supervisory question, one evidence trail, one bounded action. Everything else stays behind the advanced inspector.</p></div>
-        <Link href="/" style={{color:'#9bb1ac',textDecoration:'none',fontSize:13}}>← Home</Link>
-      </header>
+  const north=pack('SOC North — challenged KPI',makeDemoRecords(),DEMO_ASSET_PROFILE);const west=pack('SOC West — healthy control',makeWestDemoRecords(),WEST_ASSET_PROFILE);const lead=north.a.findings.find(f=>f.verdict==='unsupported')??north.a.findings[0];const challenge=Math.round((north.unsupported*22+north.review*10)+Math.min(30,lead.missingCount/6));
+  return <main className="blInstrument">
+    <header className="blHeader"><div className="blBrand"><Link href="/" className="blLogo"><span className="blMark">◉</span><b>BLACKLIGHT</b></Link><span className="blDivider"/><div className="blHeaderMeta"><strong>SOC supervisory assessment</strong><small>Periodic evidence review · deterministic · offline-friendly</small></div></div><div className="blHeaderActions"><Link href="/advanced" className="blGhost"><Layers size={15}/> Advanced</Link><Link href="/evidence?soc=north" className="blGhost"><Link2 size={15}/> Open evidence</Link><Link href="/evidence?soc=north" className="blPrimary"><FileSearch size={15}/> Start review</Link></div></header>
 
-      <section style={{border:'1px solid #2a4640',borderRadius:18,background:'#0b191d',padding:'24px 26px',marginBottom:20}}>
-        <span style={{fontSize:10,letterSpacing:'.1em',color:'#708984'}}>01 · CLAIM</span>
-        <div style={{display:'flex',justifyContent:'space-between',gap:18,alignItems:'end',flexWrap:'wrap',marginTop:7}}>
-          <div><strong style={{display:'block',fontSize:40}}>99.8% SLA compliance</strong><p style={{margin:'7px 0 0',color:'#91a6a1',fontSize:14}}>A strong headline. BLACKLIGHT asks: <b style={{color:'#cce0da'}}>what evidence should exist if it is genuinely true?</b></p></div>
-          <span style={{border:'1px solid #70563a',background:'#2a2118',color:'#e7c37c',padding:'8px 11px',borderRadius:999,fontSize:11,fontWeight:800}}>CHALLENGED · NOT CONDEMNED</span>
-        </div>
-      </section>
+    <div className="blBody">
+      <section className="blCanvas"><div className="blGrid"/><div className="blCanvasInner">
+        <div className="blCanvasTitle"><div><span>SUPERVISORY EVIDENCE CANVAS</span><h1>Can the SOC prove the story behind 99.8%?</h1></div><small>Same engine · two evidence packs · no misconduct inference</small></div>
+        <div className="blClaim"><span>REPORTED KPI</span><div className="blClaimLine"><strong>99.8% SLA compliance</strong><em>CHALLENGED · NOT CONDEMNED</em></div></div>
+        <div className="blFlow"><article><span>01 · CLAIM</span><b>Define what must be true</b><p>A strong SLA should leave investigation, automation and coverage evidence.</p></article><article><span>02 · RECONSTRUCT</span><b>Replay operational evidence</b><p>Check event ordering and negative space instead of trusting the aggregate.</p></article><article><span>03 · FALSIFY</span><b>Keep competing explanations</b><p>Automation can still explain fast closure — if its execution trail exists.</p></article><article><span>04 · ACT</span><b>Ask for the smallest proof</b><p>Reduce a broad audit to seven diverse reviews and one targeted request.</p></article></div>
+        <div className="blSocCompare"><SocCard kind="north" title="SOC North" state="Claim challenged" p={north} observed="311 / 587 protected assets observed" automation="41 fast closures lack automation trail" href="/evidence?soc=north"/><SocCard kind="west" title="SOC West" state="Healthy control" p={west} observed="Coverage aligns with declared estate" automation="Automation trail remains coherent" href="/evidence?soc=west"/></div>
+      </div></section>
 
-      <section aria-label="BLACKLIGHT proof flow" style={{border:'1px solid #203934',borderRadius:16,background:'#091619',padding:'20px 22px',marginBottom:20}}>
-        <div style={{display:'grid',gridTemplateColumns:'1fr auto 1fr auto 1fr',alignItems:'center',gap:14}}>
-          <div><span style={{fontSize:10,color:'#6f8983'}}>02 · TEST</span><strong style={{display:'block',fontSize:17,marginTop:5}}>Reconstruct evidence</strong><p style={{margin:'5px 0 0',color:'#8ea39e',fontSize:12.5,lineHeight:1.5}}>Investigation transitions, automation trails and telemetry coverage.</p></div>
-          <span style={{fontSize:22,color:'#49675f'}}>→</span>
-          <div><span style={{fontSize:10,color:'#6f8983'}}>03 · COMPARE</span><strong style={{display:'block',fontSize:17,marginTop:5}}>Run North vs West</strong><p style={{margin:'5px 0 0',color:'#8ea39e',fontSize:12.5,lineHeight:1.5}}>Same deterministic engine. Different evidence. Different conclusion.</p></div>
-          <span style={{fontSize:22,color:'#49675f'}}>→</span>
-          <div><span style={{fontSize:10,color:'#6f8983'}}>04 · ACT</span><strong style={{display:'block',fontSize:17,marginTop:5}}>Ask for the smallest proof</strong><p style={{margin:'5px 0 0',color:'#8ea39e',fontSize:12.5,lineHeight:1.5}}>7 diverse reviews + 1 missing automation execution trail.</p></div>
-        </div>
-      </section>
+      <aside className="blPanel">
+        <section className="blCard"><div className="blSearch"><FileSearch size={15}/><span>Select an evidence pack to examine...</span></div><div className="blPreset"><Link className="active" href="/evidence?soc=north">SOC North</Link><Link href="/evidence?soc=west">SOC West</Link></div><div className="blActionBox"><span>GUIDED REVIEW</span><h2>Start with the challenged claim.</h2><p>Open North, inspect the decisive contradiction, then flip to West and watch the same rules clear a documented control.</p><Link className="blRun" href="/evidence?soc=north">Run falsification walkthrough</Link></div></section>
 
-      <section style={{display:'grid',gridTemplateColumns:'1.25fr .75fr',gap:14,marginBottom:18}}>
-        <article style={{border:'1px solid #2f554a',borderRadius:17,background:'linear-gradient(135deg,#10251f,#0b191d)',padding:'23px'}}>
-          <div style={{display:'flex',gap:9,alignItems:'center'}}><FileSearch size={18} color="#78dfc5"/><span style={{fontSize:10,letterSpacing:'.08em',color:'#78dfc5'}}>START HERE</span></div>
-          <h2 style={{fontSize:24,margin:'10px 0 8px'}}>Open SOC North and follow the evidence.</h2>
-          <p style={{color:'#9bb0aa',fontSize:13.5,lineHeight:1.6,margin:'0 0 17px'}}>You will see fast closures, reduced investigation depth, reopen rise and missing automation evidence. Then flip to SOC West: documented automation clears the same tests.</p>
-          <Link href="/evidence?soc=north" style={{display:'inline-flex',alignItems:'center',gap:8,padding:'13px 16px',borderRadius:9,background:'#78dfc5',color:'#071014',textDecoration:'none',fontWeight:800}}>Start the proof walkthrough <ArrowRight size={16}/></Link>
-        </article>
-        <article style={{border:'1px solid #413c2b',borderRadius:17,background:'#171711',padding:'23px'}}>
-          <div style={{display:'flex',gap:9,alignItems:'center'}}><Target size={18} color="#e3be6a"/><span style={{fontSize:10,letterSpacing:'.08em',color:'#e3be6a'}}>END STATE</span></div>
-          <strong style={{display:'block',fontSize:25,margin:'10px 0 8px'}}>7 + 1</strong>
-          <p style={{color:'#a59d82',fontSize:13,lineHeight:1.55,margin:0}}>Seven diverse reviews plus one targeted evidence request instead of a broad manual audit.</p>
-        </article>
-      </section>
+        <section className="blCard"><div className="blCardHead"><span>CLAIM ROBUSTNESS INDEX</span><span>deterministic</span></div><div className="blIndex"><strong>{Math.min(99,challenge)}</strong><span>/ 100</span></div><b className="blGrade">High supervisory challenge</b><div className="blTags"><span>{north.unsupported} UNSUPPORTED</span><span>{north.review} REVIEW</span><span>{north.a.dataset.recordCount.toLocaleString()} RECORDS</span></div><div className="blDrivers"><Driver label="Missing investigation transitions" value={92}/><Driver label="Observed protected-asset evidence" value={53}/><Driver label="Automation-trail support" value={71}/><Driver label="Policy comparability" value={64}/></div><div className="blTrust"><span>NEXT ACTION</span><b>7 reviews + 1 evidence request</b></div></section>
 
-      <footer style={{display:'flex',justifyContent:'space-between',gap:14,alignItems:'center',flexWrap:'wrap',borderTop:'1px solid #1e332e',paddingTop:16}}>
-        <span style={{display:'inline-flex',alignItems:'center',gap:7,color:'#819792',fontSize:12}}><ShieldCheck size={14}/> deterministic · offline-friendly · supervisor remains final</span>
-        <Link href="/advanced" style={{color:'#91a6a1',fontSize:12,textDecoration:'none'}}>Advanced evidence inspector →</Link>
-      </footer>
+        <div className="blNote"><span>BOUNDARY CONDITION</span><b>BLACKLIGHT challenges claims, not people.</b><p>Fast closure alone is not misconduct. A legitimate automation explanation stays alive until the expected execution evidence is produced.</p></div>
+      </aside>
     </div>
-  </main>;
+  </main>
 }
+
+function SocCard({kind,title,state,p,observed,automation,href}:{kind:'north'|'west';title:string;state:string;p:any;observed:string;automation:string;href:string}){return <article className={`blSoc ${kind}`}><div className="blSocHead"><span>{title.toUpperCase()}</span><b>{state}</b></div><div className="blSocStats"><div><span>Unsupported</span><b>{p.unsupported}</b></div><div><span>Review</span><b>{p.review}</b></div><div><span>Supported</span><b>{p.supported}</b></div></div><div className="blSocRows"><div><span>Investigation evidence</span><b>{kind==='north'?'136 gaps':'complete'}</b></div><div><span>Protected assets</span><b>{observed}</b></div><div><span>Automation explanation</span><b>{automation}</b></div></div><div className="blSocAction"><span>Same rules · different evidence</span><Link href={href}>Inspect pack →</Link></div></article>}
+function Driver({label,value}:{label:string;value:number}){return <div><span>{label}<b>{value}%</b></span><i><em style={{width:`${value}%`}}/></i></div>}
